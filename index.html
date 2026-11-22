@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>君轩 · 个人案件管理平台</title>
+  <title>Ordinarium · 序库</title>
   <style>
     :root {
       --navy-950: #0b1b2b;
@@ -61,15 +61,7 @@
       z-index: 20;
     }
     .brand { display: flex; align-items: center; gap: 12px; padding: 0 10px 28px; }
-    .brand-mark {
-      width: 42px; height: 42px; border-radius: 12px;
-      display: grid; place-items: center;
-      color: var(--navy-950); background: linear-gradient(145deg, #ecd9ae, var(--gold));
-      font: 700 21px/1 Georgia, serif;
-      box-shadow: 0 7px 20px rgba(0,0,0,.2);
-    }
-    .brand-name { font: 600 18px/1.25 Georgia, "Songti SC", serif; letter-spacing: .12em; }
-    .brand-sub { margin-top: 4px; color: rgba(255,255,255,.52); font-size: 11px; letter-spacing: .12em; }
+    .brand-name { font: 650 20px/1.25 -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: -.025em; }
     .nav-label { margin: 8px 12px 10px; color: rgba(255,255,255,.38); font-size: 11px; letter-spacing: .16em; }
     .nav { display: grid; gap: 7px; }
     .nav-btn {
@@ -147,6 +139,8 @@
     .result-count { margin-left: auto; color: #818b93; font-size: 12px; white-space: nowrap; }
 
     .table-wrap { overflow-x: auto; }
+    .case-table th:first-child, .case-table td:first-child { min-width: 180px; }
+    .scroll-hint { padding: 8px 16px; color: #566673; font-size: 12px; }
     table { width: 100%; border-collapse: collapse; min-width: 980px; }
     th { padding: 13px 15px; color: #7c878f; background: #fafaf8; font-size: 11px; letter-spacing: .04em; font-weight: 600; text-align: left; border-bottom: 1px solid var(--line); }
     td { padding: 16px 15px; border-bottom: 1px solid #eceeed; color: #3b4852; font-size: 13px; vertical-align: middle; }
@@ -174,6 +168,14 @@
     .empty strong { display: block; margin-bottom: 5px; color: var(--navy-900); font: 600 16px Georgia, serif; }
 
     .gantt-controls { padding: 18px; display: flex; align-items: end; gap: 12px; border-bottom: 1px solid var(--line); }
+    .progress-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; padding:20px 20px 0; }
+    .progress-card { background:#f6f8f8; border-radius:10px; padding:16px; line-height:1.6; }
+    .progress-card strong { display:block; margin-top:6px; color:var(--navy-900); }
+    .progress-tabs { display:flex; gap:8px; padding:20px 20px 0; }
+    .progress-tabs [aria-pressed="true"] { background:var(--navy-900); color:white; }
+    .history-row { display:grid; grid-template-columns:145px 1fr auto; gap:12px; padding:16px 0; border-bottom:1px solid var(--line); align-items:center; }
+    .history-date { color:var(--muted); font-size:12px; }
+    @media(max-width:600px) { .history-row { grid-template-columns:1fr auto; } .history-date { grid-column:1 / -1; } }
     .control-group { min-width: 280px; flex: 1; max-width: 480px; }
     label { display: block; margin-bottom: 7px; color: #596771; font-size: 12px; font-weight: 650; }
     .gantt-summary { margin-left: auto; text-align: right; color: var(--muted); font-size: 12px; line-height: 1.7; }
@@ -300,11 +302,10 @@
       .nav-btn svg { width: 17px; height: 17px; }
       main { padding: 20px 15px 92px; }
       .mobile-top { display: flex; align-items: center; gap: 9px; margin-bottom: 22px; color: var(--navy-900); font: 600 16px Georgia, serif; }
-      .mobile-top .brand-mark { width: 32px; height: 32px; border-radius: 9px; font-size: 16px; }
       .page-head { align-items: flex-end; margin-bottom: 20px; }
       h1 { font-size: 25px; }
       .page-head .subtitle { display: none; }
-      .head-actions .btn .desktop-label { display: none; }
+  
       .stats { gap: 10px; }
       .stat-card { min-height: 107px; padding: 16px; }
       .stat-value { font-size: 25px; }
@@ -327,24 +328,65 @@
       .page-head { gap: 8px; }
       .btn { padding-left: 11px; padding-right: 11px; }
     }
+
+    /* Calm, compact surfaces keep case information in focus. */
+    :root { --cream: #f3f5f7; --paper: #fff; --line: #d9dee3; --shadow: 0 4px 18px rgba(16,38,58,.05); --radius: 16px; }
+    body { line-height: 1.5; }
+    .sidebar { background: linear-gradient(180deg, #21364a, #122538); }
+    .nav-btn { transition: background-color .16s ease, color .16s ease; }
+    .nav-btn.active { background: rgba(255,255,255,.16); }
+    h1, .modal-head h2, .drawer-head h2, .section-title h3 { font-family: inherit; letter-spacing: -.025em; }
+    h1 { font-weight: 700; }
+    .page-head { margin-bottom: 22px; }
+    .stat-card { min-height: 108px; padding: 17px 20px; }
+    .stat-card::after { display: none; }
+    .stat-value { margin-top: 10px; font-family: inherit; font-variant-numeric: tabular-nums; }
+    .panel, .stat-card { border-color: rgba(16,38,58,.08); }
+    .btn, .icon-btn { transition: background-color .15s ease, border-color .15s ease, transform .15s ease; }
+    .btn:hover { transform: none; }
+    .btn:active, .icon-btn:active, .nav-btn:active { transform: scale(.97); }
+    .field, .select { background: #fff; }
+    tbody tr:hover { background: #f4f7fa; }
+    .modal-head { background: rgba(255,255,255,.94); }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+    @media (prefers-reduced-transparency: reduce) { .modal-head { background: #fff; backdrop-filter: none; } }
+    @media (prefers-contrast: more) { .panel, .stat-card, .field, .select { border-color: #66727d; } .nav-btn { color: #fff; } }
+
+    .insight-grid { display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-bottom:22px; }
+    .insight { padding:20px; }
+    .insight h2 { margin:0 0 4px; font-size:16px; color:var(--navy-900); }
+    .insight-note { margin:0 0 14px; color:var(--muted); font-size:12px; }
+    .insight-list { display:grid; gap:8px; }
+    .insight-item { display:flex; align-items:center; gap:12px; padding:9px 0; border-top:1px solid var(--line); font-size:13px; }
+    .insight-item time { color:var(--navy-700); font-weight:700; white-space:nowrap; }
+    .insight-item span { min-width:0; overflow-wrap:anywhere; }
+    .insight-item button { margin-left:auto; flex-shrink:0; }
+    .distribution, .recovery-track { display:flex; height:10px; overflow:hidden; border-radius:99px; background:#e7ebee; }
+    .distribution span, .recovery-track span { height:100%; }
+    .insight-legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; font-size:12px; color:var(--muted); }
+    .insight-legend b { color:var(--ink); }
+    .insight-legend i { display:inline-block; width:9px; height:9px; margin-right:5px; border-radius:50%; }
+    .recovery-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .recovery-label { display:flex; justify-content:space-between; gap:10px; margin-bottom:8px; font-size:13px; }
+    .recovery-track span { background:var(--green); }
+    .recovery-detail { margin:7px 0 0; font-size:12px; color:var(--muted); }
+    @media (max-width:760px) { .insight-grid, .recovery-grid { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">君</div>
-        <div><div class="brand-name">君轩</div><div class="brand-sub">CASE DESK</div></div>
+        <div class="brand-name">Ordinarium</div>
       </div>
       <div class="nav-label">工作台</div>
       <nav class="nav" aria-label="主导航">
-        <button class="nav-btn active" data-page="cases">
+        <button class="nav-btn active" data-page="cases" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4V2m8 2V2M3 9h18"/></svg>
           案件总览
-        </button>
-        <button class="nav-btn" data-page="progress">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5v14M8 7h9M8 12h12M8 17h7"/><path d="M17 5v4m3 1v4m-5 1v4"/></svg>
-          办案进度
         </button>
         <button class="nav-btn" data-page="bank">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18L12 3 3 9Z"/><path d="M5 9v9m4-9v9m6-9v9m4-9v9M3 21h18M2 18h20"/></svg>
@@ -359,7 +401,7 @@
     </aside>
 
     <main>
-      <div class="mobile-top"><div class="brand-mark">君</div>君轩 · 案件管理</div>
+      <div class="mobile-top">Ordinarium</div>
 
       <section class="page active" id="page-cases">
         <header class="page-head">
@@ -374,30 +416,38 @@
         <div class="stats">
           <div class="stat-card" style="--accent:#24516f;--tint:#e7f0f7"><div class="stat-top"><span class="stat-label">全部案件</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span></div><div class="stat-value" id="statTotal">0</div><div class="stat-note">已录入案件总数</div></div>
           <div class="stat-card" style="--accent:#2f7d64;--tint:#e7f3ee"><div class="stat-top"><span class="stat-label">办理中</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></span></div><div class="stat-value" id="statActive">0</div><div class="stat-note">当前持续跟进</div></div>
-          <div class="stat-card" style="--accent:#24516f;--tint:#edf1f3"><div class="stat-top"><span class="stat-label">已完成</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span></div><div class="stat-value" id="statDone">0</div><div class="stat-note">已办结归档</div></div>
-          <div class="stat-card" style="--accent:#b64c45;--tint:#fbeae8"><div class="stat-top"><span class="stat-label">逾期任务</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4 3.8 19h16.4z"/><path d="M12 9v4m0 3h.01"/></svg></span></div><div class="stat-value" id="statOverdue">0</div><div class="stat-note">请优先安排处理</div></div>
+          <div class="stat-card" style="--accent:#24516f;--tint:#edf1f3"><div class="stat-top"><span class="stat-label">已结案</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span></div><div class="stat-value" id="statDone">0</div><div class="stat-note">已办结归档</div></div>
+          <div class="stat-card" style="--accent:#b88d4b;--tint:#faf1e3"><div class="stat-top"><span class="stat-label">待执行</span><span class="stat-icon">执</span></div><div class="stat-value" id="statExecution">0</div><div class="stat-note">已完成执行立案的案件</div></div>
+        </div>
+
+        <div class="insight-grid">
+          <section class="panel insight" aria-labelledby="upcomingTitle"><h2 id="upcomingTitle">近期工作节点</h2><p class="insight-note">每个普通案件最近的未来节点；日期为记录日期，不自动认定为法定期限。</p><div id="upcomingList" class="insight-list"></div></section>
+          <section class="panel insight" aria-labelledby="distributionTitle"><h2 id="distributionTitle">案件状态分布</h2><p class="insight-note">按普通案件的当前状态统计</p><div id="caseDistribution"></div></section>
         </div>
 
         <div class="panel">
           <div class="toolbar">
-            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input class="field" id="searchInput" placeholder="搜索案号、案由、当事人、代理人…"></div>
-            <select class="select" id="statusFilter" aria-label="按状态筛选"><option value="all">全部状态</option><option value="办理中">办理中</option><option value="已完成">已完成</option><option value="已暂停">已暂停</option></select>
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input class="field" id="searchInput" placeholder="搜索案号、案由、当事人、所函号…"></div>
+            <select class="select" id="statusFilter" aria-label="按状态筛选"><option value="all">全部状态</option><option value="办理中">办理中</option><option value="已结案">已结案</option></select>
             <span class="result-count" id="resultCount">共 0 条</span>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>案号 / 案由</th><th>委托人</th><th>对方当事人</th><th>所函号</th><th>代理人</th><th>临近日程</th><th>状态</th><th>操作</th></tr></thead><tbody id="caseTableBody"></tbody></table><div class="empty" id="caseEmpty" hidden><div class="empty-icon">⌕</div><strong>没有找到案件</strong>请调整搜索条件，或录入一宗新案件</div></div>
+          <div class="scroll-hint">双击案件行查看办案进度；表格可左右滚动</div><div class="table-wrap" tabindex="0" aria-label="案件列表，可左右滚动"><table class="case-table"><thead><tr><th>案号 / 案由</th><th>委托人</th><th>对方当事人</th><th>所函号</th><th>临近日程</th><th>状态</th><th>操作</th></tr></thead><tbody id="caseTableBody"></tbody></table><div class="empty" id="caseEmpty" hidden><div class="empty-icon">⌕</div><strong>没有找到案件</strong>请调整搜索条件，或录入一宗新案件</div></div>
+          <nav class="toolbar" id="casePagination" aria-label="案件分页" hidden><button class="btn" id="casePrev">上一页</button><span id="casePageInfo" aria-live="polite"></span><button class="btn" id="caseNext">下一页</button></nav>
         </div>
       </section>
 
       <section class="page" id="page-progress">
         <header class="page-head">
-          <div><div class="eyebrow">CASE TIMELINE</div><h1>办案进度</h1><p class="subtitle">按时间轴统筹阶段任务与截止日期</p></div>
+          <div><button class="btn btn-sm" id="backToCases">← 返回案件总览</button><div class="eyebrow" style="margin-top:14px">CASE TIMELINE</div><h1>办案进度</h1><p class="subtitle">按时间轴统筹阶段任务与截止日期</p></div>
           <div class="head-actions"><button class="btn btn-primary" id="addStageBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="desktop-label">新增阶段</span></button></div>
         </header>
         <div class="panel">
           <div class="gantt-controls">
-            <div class="control-group"><label for="ganttCaseSelect">选择案件</label><select class="select" id="ganttCaseSelect"></select></div>
+            <div class="control-group"><label for="ganttCaseSearch">查找案件</label><input class="field" id="ganttCaseSearch" type="search" placeholder="输入委托人、对方当事人、案由或案号"><label for="ganttCaseSelect" style="display:block;margin-top:10px">选择案件</label><select class="select" id="ganttCaseSelect"></select><small id="ganttSearchHint" aria-live="polite"></small></div>
             <div class="gantt-summary" id="ganttSummary"></div>
           </div>
+          <div class="progress-cards" id="progressCards"></div>
+          <div class="progress-tabs" role="group" aria-label="进度视图"><button class="btn" id="timelineView" aria-pressed="true">时间线</button><button class="btn" id="ganttView" aria-pressed="false">甘特图</button></div>
           <div class="gantt-shell" id="ganttShell"></div>
         </div>
       </section>
@@ -413,15 +463,18 @@
           <div class="stat-card" style="--accent:#2f7d64;--tint:#e7f3ee"><div class="stat-top"><span class="stat-label">标的累计回款</span><span class="stat-icon">¥</span></div><div class="stat-value" id="bankStatRecovered" style="font-size:23px">¥0</div><div class="stat-note">仅统计贷款本息等标的回款</div></div>
           <div class="stat-card" style="--accent:#b64c45;--tint:#fbeae8"><div class="stat-top"><span class="stat-label">待收律师费</span><span class="stat-icon">¥</span></div><div class="stat-value" id="bankStatOutstanding" style="font-size:23px">¥0</div><div class="stat-note">律师费减已收律师费</div></div>
         </div>
-        <div class="subtabs"><button class="subtab active" data-bank-view="list">分组与案件</button><button class="subtab" data-bank-view="timeline">逐案进度</button></div>
+        <section class="panel insight" style="margin-bottom:22px" aria-labelledby="recoveryOverviewTitle"><h2 id="recoveryOverviewTitle">回款进度</h2><p class="insight-note">全部银行案件合计；分别按标的总额和律师费总额计算</p><div class="recovery-grid" id="recoveryOverview"></div></section>
         <div class="bank-view active" id="bank-view-list">
           <div class="panel">
             <div class="toolbar"><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg><input class="field" id="bankSearchInput" placeholder="搜索案件类型、经办人、被告、案号…"></div><select class="select" id="bankBranchFilter"><option value="all">全部银行</option><option>金坛农行</option><option>溧阳农行</option><option>经开农行</option></select><span class="result-count" id="bankResultCount">共 0 组</span></div>
             <div class="table-wrap"><table><thead><tr><th>所属银行 / 案件类型</th><th>被告案件</th><th>标的总额</th><th>标的回款</th><th>标的未回</th><th>律师费 / 已收</th><th>待收律师费</th><th>操作</th></tr></thead><tbody id="bankTableBody"></tbody></table><div class="empty" id="bankEmpty" hidden><div class="empty-icon">银</div><strong>暂无银行案件分组</strong>点击“新增业务分组”开始记录</div></div>
           </div>
         </div>
-        <div class="bank-view" id="bank-view-timeline">
-          <div class="panel"><div class="gantt-controls"><div class="control-group"><label for="bankGanttSelect">选择被告案件</label><select class="select" id="bankGanttSelect"></select></div><button class="btn btn-primary" id="addBankEventBtn">＋ 新增进度事件</button><div class="gantt-summary" id="bankGanttSummary"></div></div><div class="gantt-shell" id="bankGanttShell"></div></div>
+      </section>
+      <section class="page" id="page-bank-progress">
+        <header class="page-head"><div><button class="btn btn-sm" id="backToBank">← 返回银行案件</button><div class="eyebrow" style="margin-top:14px">BANK CASE TIMELINE</div><h1>办案进度</h1><p class="subtitle">按时间轴统筹银行案件事项与截止日期</p></div></header>
+        <div id="bank-view-timeline">
+          <div class="panel"><div class="gantt-controls"><div class="control-group"><label for="bankGanttSearch">查找案件</label><input class="field" id="bankGanttSearch" type="search" placeholder="输入银行、案件类型、被告、案号或经办人"><label for="bankGanttSelect" style="display:block;margin-top:10px">选择被告案件</label><select class="select" id="bankGanttSelect"></select></div><button class="btn btn-primary" id="addBankEventBtn">＋ 新增进度事件</button><div class="gantt-summary" id="bankGanttSummary"></div></div><div class="progress-cards" id="bankProgressCards"></div><div class="progress-tabs" role="group" aria-label="银行案件进度视图"><button class="btn" id="bankTimelineView" aria-pressed="true">时间线</button><button class="btn" id="bankGanttView" aria-pressed="false">甘特图</button></div><div class="gantt-shell" id="bankGanttShell"></div></div>
         </div>
       </section>
 
@@ -429,7 +482,7 @@
         <header class="page-head"><div><div class="eyebrow">LOCAL DATA</div><h1>数据管理</h1><p class="subtitle">备份、恢复或清理保存在当前浏览器中的案件资料</p></div></header>
         <div class="data-grid">
           <article class="data-card"><div class="data-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m-4-4 4 4 4-4M5 19h14"/></svg></div><h3>导出备份</h3><p>将普通案件、银行案件及全部进度记录导出为 JSON 文件。</p><button class="btn btn-primary" id="exportBtn">导出 JSON 备份</button></article>
-          <article class="data-card"><div class="data-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21V9m-4 4 4-4 4 4M5 5h14"/></svg></div><h3>导入恢复</h3><p>从此前导出的 JSON 文件恢复数据，导入前会验证文件结构。</p><button class="btn btn-gold" id="importBtn">选择备份文件</button><input type="file" id="importFile" accept="application/json,.json" hidden></article>
+          <article class="data-card"><div class="data-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21V9m-4 4 4-4 4 4M5 5h14"/></svg></div><h3>导入恢复</h3><p>从此前导出的 JSON 文件恢复数据；导入会覆盖对应的现有数据，建议先导出备份。</p><button class="btn btn-gold" id="importBtn">选择备份文件</button><input type="file" id="importFile" accept="application/json,.json" hidden></article>
           <article class="data-card"><div class="data-icon" style="color:var(--red);background:var(--red-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"/></svg></div><h3>清空数据</h3><p>删除普通案件与银行案件资料。该操作需要连续两次确认。</p><button class="btn btn-danger" id="clearBtn">清空全部数据</button></article>
         </div>
         <div class="storage-note"><strong>隐私提示：</strong>数据仅保存在当前浏览器的本地存储中，不会上传到任何服务器。清理浏览器数据或更换设备可能导致资料丢失，请定期导出备份。</div>
@@ -445,15 +498,14 @@
       <div class="form-group"><label for="caseClient">委托人姓名 / 名称</label><input class="field" id="caseClient" maxlength="160" placeholder="可填写多位委托人"></div>
       <div class="form-group"><label for="caseOpponent">对方当事人</label><input class="field" id="caseOpponent" maxlength="160" placeholder="可填写多位当事人"></div>
       <div class="form-group"><label for="caseLetter">所函号</label><input class="field" id="caseLetter" maxlength="100" placeholder="如：律函字〔2026〕018号"></div>
-      <div class="form-group"><label for="caseAgent">代理人</label><input class="field" id="caseAgent" maxlength="120" placeholder="可填写多位代理人"></div>
-      <div class="form-group full"><label for="caseStatus">案件状态</label><select class="select" id="caseStatus"><option>办理中</option><option>已完成</option><option>已暂停</option></select></div>
+      <div class="form-group full"><label for="caseStatus">案件状态</label><select class="select" id="caseStatus"><option>办理中</option><option>已结案</option></select></div>
     </div></div><div class="modal-actions"><button type="button" class="btn" data-close="caseModal">取消</button><button type="submit" class="btn btn-primary">保存案件</button></div></form>
   </div></div>
 
   <div class="modal-backdrop" id="stageModal" aria-hidden="true"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="stageModalTitle">
     <div class="modal-head"><h2 id="stageModalTitle">新增办案阶段</h2><button class="icon-btn" data-close="stageModal" aria-label="关闭">✕</button></div>
     <form id="stageForm" novalidate><div class="modal-body"><div class="form-grid">
-      <div class="form-group"><label for="stagePreset">常用办案事项</label><select class="select" id="stagePreset"><option value="">自定义事项</option><option data-type="point">材料接收</option><option data-type="range">立案</option><option data-type="point">收到开庭传票</option><option data-type="point">开庭日期</option><option data-type="point">申请执行</option><option data-type="range">财产保全时限</option></select></div>
+      <div class="form-group"><label for="stagePreset">常用办案事项</label><select class="select" id="stagePreset"><option value="">自定义事项</option><option data-type="point">材料接收</option><option data-type="point">提交立案材料</option><option data-type="point">收到受理案件通知书</option><option data-type="point">开庭</option><option data-type="point">执行立案</option></select></div>
       <div class="form-group"><label for="stageType">时间类型</label><select class="select" id="stageType"><option value="point">时间点（里程碑）</option><option value="range">时间段（起止日期）</option></select></div>
       <div class="form-group full"><label for="stageName">事项名称</label><input class="field" id="stageName" maxlength="100" placeholder="如：立案"></div>
       <div class="form-group" id="stageStartGroup"><label for="stageStart" id="stageStartLabel">发生日期</label><input class="field" type="date" id="stageStart"></div>
@@ -519,6 +571,8 @@
       const STORAGE_KEY = 'hengjian_case_manager_v1';
       const BANK_STORAGE_KEY = 'hengjian_bank_case_manager_v1';
       const storageReadErrors = new Set();
+      const storageSnapshots = new Map();
+      let renderedDate = null;
       const DAY = 86400000;
       const $ = (s, root = document) => root.querySelector(s);
       const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -529,6 +583,8 @@
       };
 
       let cases = loadCases();
+      let progressView = 'timeline';
+      let casePage = 1;
       let editingCaseId = null;
       let editingStageId = null;
       let currentDrawerId = null;
@@ -539,6 +595,7 @@
       let editingBankEventId = null;
       let selectedBankBatchId = bankBatches[0]?.id || null;
       let selectedBankCaseId = bankBatches.flatMap(b=>b.defendants||[])[0]?.id || null;
+      let bankProgressView = 'timeline';
       let recoveryCaseId = null;
       let currentBankDrawerId = null;
 
@@ -560,26 +617,26 @@
       }
 
       function loadCases() {
-        try { const raw=localStorage.getItem(STORAGE_KEY); return raw===null ? [] : normalizeCases(JSON.parse(raw)); }
+        try { const raw=localStorage.getItem(STORAGE_KEY); if(!storageSnapshots.has(STORAGE_KEY))storageSnapshots.set(STORAGE_KEY,raw); const parsed=raw===null?[]:JSON.parse(raw); if(!validateCases(parsed))throw new Error('普通案件结构无效'); const cleaned=normalizeCases(parsed); if(parsed.some(c=>Object.prototype.hasOwnProperty.call(c,'agent')||c.status==='已完成'||c.status==='已暂停'))saveStored(STORAGE_KEY,cleaned,'普通案件'); return cleaned; }
         catch(e) { storageReadErrors.add(STORAGE_KEY); console.warn('读取本地数据失败',e); queueMicrotask(()=>toast('普通案件数据无法读取，已停止写入以保护原数据','error')); return []; }
       }
       function saveCases() { if(saveStored(STORAGE_KEY,cases,'普通案件'))return true;cases=loadCases();return false; }
       function normalizeCases(value) {
         const legacyPoints = ['材料接收', '材料接收与审查', '收到传票', '收到开庭传票', '开庭日期', '申请执行'];
-        return value.map(c => ({...c, stages:c.stages.map(s => {
+        return value.map(({agent, ...c}) => ({...c, status:c.status==='已完成'?'已结案':c.status==='已暂停'?'办理中':c.status, stages:c.stages.map(s => {
           const type = s.type === 'point' || (!s.type && legacyPoints.includes(s.name)) ? 'point' : 'range';
-          const name = s.name === '材料接收与审查' ? '材料接收' : s.name === '证据整理与立案' ? '立案' : s.name === '收到传票' ? '收到开庭传票' : s.name;
+          const name = s.name === '材料接收与审查' ? '材料接收' : s.name === '证据整理与立案' ? '立案' : s.name === '收到传票' ? '收到开庭传票' : s.name === '开庭日期' ? '开庭' : s.name === '申请执行' && type === 'point' ? '执行立案' : s.name;
           const end = type === 'point' ? s.start : (s.end || s.start);
           return {...s, name, type, end, progress:type === 'point' ? 100 : rangeProgress(s.start, end)};
         })}));
       }
       function findCase(id) { return cases.find(c => c.id === id); }
       function loadBankBatches() {
-        try { const raw=localStorage.getItem(BANK_STORAGE_KEY); return raw ? normalizeBankBatches(JSON.parse(raw)) : []; }
+        try { const raw=localStorage.getItem(BANK_STORAGE_KEY); if(!storageSnapshots.has(BANK_STORAGE_KEY))storageSnapshots.set(BANK_STORAGE_KEY,raw); return raw===null?[]:normalizeBankBatches(JSON.parse(raw)); }
         catch(e) { storageReadErrors.add(BANK_STORAGE_KEY); console.warn('读取银行案件数据失败',e); queueMicrotask(()=>toast('银行案件数据无法读取，已停止写入以保护原数据','error')); return []; }
       }
       function normalizeBankBatches(value) {
-        if(!Array.isArray(value))return [];
+        if(!validateBankBatches(value))throw new Error('银行案件结构无效');
         const loans=['农户贷','小额贷','车贷','房抵贷','家装信用卡'];
         return value.map(b=>{
           const legacyEvents=Array.isArray(b.events)?b.events:[],loanType=loans.includes(b.loanType)?b.loanType:(loans.find(x=>(b.batchName||'').includes(x))||'农户贷');
@@ -588,8 +645,34 @@
         });
       }
       function saveBankBatches(){if(saveStored(BANK_STORAGE_KEY,bankBatches,'银行案件'))return true;bankBatches=loadBankBatches();return false;}
-      function saveStored(key,value,label){if(storageReadErrors.has(key)){toast(`${label}原数据异常，拒绝覆盖，请先导出浏览器数据或导入有效备份`,'error');return false;}try{localStorage.setItem(key,JSON.stringify(value));return true;}catch(e){console.warn(`保存${label}失败`,e);toast(`${label}保存失败，本次修改未写入`,'error');return false;}}
-      function replaceAllData(nextCases,nextBanks){let oldCases,oldBanks;try{oldCases=localStorage.getItem(STORAGE_KEY);oldBanks=localStorage.getItem(BANK_STORAGE_KEY);localStorage.setItem(STORAGE_KEY,JSON.stringify(nextCases));localStorage.setItem(BANK_STORAGE_KEY,JSON.stringify(nextBanks));storageReadErrors.delete(STORAGE_KEY);storageReadErrors.delete(BANK_STORAGE_KEY);return true;}catch(e){try{oldCases===null?localStorage.removeItem(STORAGE_KEY):localStorage.setItem(STORAGE_KEY,oldCases);oldBanks===null?localStorage.removeItem(BANK_STORAGE_KEY):localStorage.setItem(BANK_STORAGE_KEY,oldBanks);}catch{}console.warn('批量保存数据失败',e);toast('存储空间不足或不可用，数据没有完成替换','error');return false;}}
+      function storageUnchanged(key) {
+        if(localStorage.getItem(key)===storageSnapshots.get(key))return true;
+        toast('其他页面已修改数据，请重新加载页面后再操作；本次修改未保存','error');
+        return false;
+      }
+      function saveStored(key,value,label){
+        if(storageReadErrors.has(key)){toast(`${label}原数据异常，拒绝覆盖，请先导出浏览器数据或导入有效备份`,'error');return false;}
+        try{
+          if(!storageUnchanged(key))return false;
+          const raw=JSON.stringify(value);localStorage.setItem(key,raw);storageSnapshots.set(key,raw);return true;
+        }catch(e){console.warn(`保存${label}失败`,e);toast(`${label}保存失败，本次修改未写入`,'error');return false;}
+      }
+      function replaceAllData(nextCases,nextBanks){
+        let oldCases,oldBanks,wroteCases=false,wroteBanks=false;
+        try{
+          if(!storageUnchanged(STORAGE_KEY)||!storageUnchanged(BANK_STORAGE_KEY))return false;
+          oldCases=localStorage.getItem(STORAGE_KEY);oldBanks=localStorage.getItem(BANK_STORAGE_KEY);
+          const rawCases=JSON.stringify(nextCases),rawBanks=JSON.stringify(nextBanks);
+          localStorage.setItem(STORAGE_KEY,rawCases);wroteCases=true;
+          localStorage.setItem(BANK_STORAGE_KEY,rawBanks);wroteBanks=true;
+          storageSnapshots.set(STORAGE_KEY,rawCases);storageSnapshots.set(BANK_STORAGE_KEY,rawBanks);
+          storageReadErrors.delete(STORAGE_KEY);storageReadErrors.delete(BANK_STORAGE_KEY);return true;
+        }catch(e){
+          try{if(wroteCases){oldCases===null?localStorage.removeItem(STORAGE_KEY):localStorage.setItem(STORAGE_KEY,oldCases);}if(wroteBanks){oldBanks===null?localStorage.removeItem(BANK_STORAGE_KEY):localStorage.setItem(BANK_STORAGE_KEY,oldBanks);}}
+          catch(rollbackError){storageReadErrors.add(STORAGE_KEY);storageReadErrors.add(BANK_STORAGE_KEY);console.warn('恢复原数据失败',rollbackError);toast('恢复原数据失败，已停止写入，请保留备份并重新加载检查','error');}
+          console.warn('批量保存数据失败',e);toast('存储空间不足或不可用，数据没有完成替换','error');return false;
+        }
+      }
       function bankBatchesFromBackup(parsed,current){return !Array.isArray(parsed)&&Object.prototype.hasOwnProperty.call(parsed,'bankBatches')?parsed.bankBatches:current;}
       function findBankBatch(id){return bankBatches.find(b=>b.id===id);}
       function findBankCase(id){for(const batch of bankBatches){const item=batch.defendants.find(d=>d.id===id);if(item)return {batch,item};}return null;}
@@ -600,7 +683,7 @@
       function caseLawyerFeeRecovered(d){return (d.payments||[]).filter(p=>p.category==='lawyerFee').reduce((s,p)=>money(s+money(p.amount)),0);}
       function caseOutstanding(d){return Math.max(0,money(money(d.amount)-caseRecovered(d)));}
       function caseLawyerFeeOutstanding(d){return Math.max(0,money(money(d.lawyerFee)-caseLawyerFeeRecovered(d)));}
-      function batchTotals(b){const amount=b.defendants.reduce((s,d)=>money(s+money(d.amount)),0),recovered=b.defendants.reduce((s,d)=>money(s+caseRecovered(d)),0),fees=b.defendants.reduce((s,d)=>money(s+money(d.lawyerFee)),0),feeRecovered=b.defendants.reduce((s,d)=>money(s+caseLawyerFeeRecovered(d)),0);return {amount,recovered,outstanding:Math.max(0,money(amount-recovered)),fees,feeRecovered,feeOutstanding:Math.max(0,money(fees-feeRecovered))};}
+      function batchTotals(b){const amount=b.defendants.reduce((s,d)=>money(s+money(d.amount)),0),recovered=b.defendants.reduce((s,d)=>money(s+caseRecovered(d)),0),fees=b.defendants.reduce((s,d)=>money(s+money(d.lawyerFee)),0),feeRecovered=b.defendants.reduce((s,d)=>money(s+caseLawyerFeeRecovered(d)),0);return {amount,recovered,outstanding:b.defendants.reduce((s,d)=>money(s+caseOutstanding(d)),0),fees,feeRecovered,feeOutstanding:b.defendants.reduce((s,d)=>money(s+caseLawyerFeeOutstanding(d)),0)};}
       function bankBranchClass(branch){return branch==='金坛农行'?'jintan':branch==='溧阳农行'?'liyang':'jingkai';}
       function rangeProgress(start, end) {
         const today = todayISO();
@@ -620,9 +703,9 @@
         const today = todayISO();
         const scheduleItems = Array.isArray(c.stages) ? c.stages : (Array.isArray(c.events) ? c.events : []);
         const events = scheduleItems.flatMap(s => {
-          if (s.type === 'point' && s.start > today) {
+          if (s.type === 'point' && s.start >= today) {
             const daysLeft = Math.round((parseDate(s.start) - parseDate(today)) / DAY);
-            return [{date:s.start, text:`${s.name}（剩余 ${daysLeft} 天）`}];
+            return [{date:s.start, text:daysLeft === 0 ? `${s.name}（今日）` : `${s.name}（剩余 ${daysLeft} 天）`}];
           }
           if (s.type !== 'range' || today < s.start || today > s.end) return [];
           const daysLeft = Math.round((parseDate(s.end) - parseDate(today)) / DAY);
@@ -631,10 +714,15 @@
         });
         return events.sort((a,b) => a.date.localeCompare(b.date))[0] || null;
       }
-      function badgeClass(status) { return status === '已完成' ? 'badge-done' : status === '已暂停' ? 'badge-paused' : 'badge-active'; }
+      function badgeClass(status) { return status === '已结案' ? 'badge-done' : 'badge-active'; }
 
+      function refreshDate() { if(renderedDate!==todayISO())renderAll(); }
       function renderAll() {
+        renderedDate=todayISO();
+        const [year,month,day]=renderedDate.split('-').map(Number);
+        $('#todayText').textContent=`${year}年${month}月${day}日 · 清晰掌握每一宗案件的关键节点`;
         renderStats();
+        renderInsights();
         renderCases();
         renderCaseSelect();
         renderGantt();
@@ -646,28 +734,51 @@
       function renderStats() {
         $('#statTotal').textContent = cases.length;
         $('#statActive').textContent = cases.filter(c => c.status === '办理中').length;
-        $('#statDone').textContent = cases.filter(c => c.status === '已完成').length;
-        $('#statOverdue').textContent = cases.reduce((n,c) => n + c.stages.filter(isOverdue).length, 0);
+        $('#statDone').textContent = cases.filter(c => c.status === '已结案').length;
+        $('#statExecution').textContent = cases.filter(c => c.stages.some(s => s.type === 'point' && s.name === '执行立案' && s.status === '已完成')).length;
+      }
+
+      function renderInsights() {
+        const upcoming=cases.filter(c=>c.status==='办理中').map(c=>({c,next:nextSchedule(c)})).filter(x=>x.next).sort((a,b)=>a.next.date.localeCompare(b.next.date)).slice(0,5);
+        const missing=cases.filter(c=>c.status==='办理中'&&!c.stages.length).length;
+        $('#upcomingList').innerHTML=(upcoming.length?upcoming.map(({c,next})=>`<div class="insight-item"><time datetime="${esc(next.date)}">${formatDate(next.date)}</time><span>${esc(next.text)} · ${shown(c.caseNumber || c.cause, '未命名案件')}</span><button class="icon-btn" data-insight-case="${esc(c.id)}" aria-label="查看案件详情" title="查看案件详情">${icons.eye}</button></div>`).join(''):'<p class="insight-note">暂无未来节点</p>')+`<p class="insight-note">${missing} 宗办理中案件尚未记录阶段</p>`;
+        const statuses=[['办理中','#24516f'],['已结案','#e6ab42']];
+        const groups=statuses.map(([name,color])=>({name,color,count:cases.filter(c=>c.status===name).length}));
+        $('#caseDistribution').innerHTML=cases.length?`<div class="distribution" aria-hidden="true">${groups.map(g=>`<span style="width:${g.count/cases.length*100}%;background:${g.color}"></span>`).join('')}</div><div class="insight-legend">${groups.map(g=>`<span><i aria-hidden="true" style="background:${g.color}"></i>${g.name} <b>${g.count}</b>（${Math.round(g.count/cases.length*100)}%）</span>`).join('')}</div>`:'<p class="insight-note">暂无案件数据</p>';
+      }
+      $('#upcomingList').addEventListener('click',e=>{const btn=e.target.closest('[data-insight-case]');if(btn){renderDrawer(btn.dataset.insightCase);openModal('caseDrawer');}});
+      function recoverySummary(label,total,paid) {
+        const ratio=total>0?Math.round(paid/total*100):null;
+        return `<div><div class="recovery-label"><strong>${label}</strong><strong>${ratio===null?'暂无比例':ratio+'%'}</strong></div><div class="recovery-track" aria-hidden="true"><span style="width:${ratio===null?0:Math.min(100,ratio)}%"></span></div><p class="recovery-detail">已收 ${currency(paid)} / 总额 ${currency(total)}${ratio!==null&&ratio>100?'（已超过总额）':''}</p></div>`;
       }
 
       function renderCases() {
         const q = $('#searchInput').value.trim().toLowerCase();
         const status = $('#statusFilter').value;
         const list = cases.filter(c => {
-          const hay = [c.cause,c.caseNumber,c.client,c.opponent,c.letterNumber,c.agent].join(' ').toLowerCase();
+          const hay = [c.cause,c.caseNumber,c.client,c.opponent,c.letterNumber].join(' ').toLowerCase();
           return (!q || hay.includes(q)) && (status === 'all' || c.status === status);
         }).sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         $('#resultCount').textContent = `共 ${list.length} 条`;
         $('#caseEmpty').hidden = list.length > 0;
-        $('#caseTableBody').innerHTML = list.map(c => {
+        const pages = Math.max(1, Math.ceil(list.length / 15));
+        casePage = Math.max(1, Math.min(casePage, pages));
+        $('#casePageInfo').textContent = `第 ${casePage} / ${pages} 页`;
+        $('#casePrev').disabled = casePage === 1;
+        $('#caseNext').disabled = casePage === pages;
+        $('#casePagination').hidden = list.length <= 15;
+        $('#caseTableBody').innerHTML = list.slice((casePage - 1) * 15, casePage * 15).map(c => {
           const upcoming = nextSchedule(c);
           const schedule = upcoming ? `<div class="schedule-mini"><span class="schedule-date">${formatDate(upcoming.date)}</span><span class="schedule-text" title="${esc(upcoming.text)}">${esc(upcoming.text)}</span></div>` : '<span class="schedule-empty">暂无临近日程</span>';
-          return `<tr><td><div class="case-main">${shown(c.caseNumber, '暂无案号')}</div><div class="case-sub">${shown(c.cause, '未填写案由')}</div></td><td>${shown(c.client)}</td><td>${shown(c.opponent)}</td><td>${shown(c.letterNumber)}</td><td>${shown(c.agent)}</td><td>${schedule}</td><td><span class="badge ${badgeClass(c.status)}">${esc(c.status)}</span></td><td><div class="actions"><button class="icon-btn" title="查看" data-action="view" data-id="${esc(c.id)}">${icons.eye}</button><button class="icon-btn" title="编辑" data-action="edit" data-id="${esc(c.id)}">${icons.edit}</button><button class="icon-btn danger" title="删除" data-action="delete" data-id="${esc(c.id)}">${icons.trash}</button></div></td></tr>`;
+          return `<tr data-case-id="${esc(c.id)}"><td><div class="case-main">${shown(c.caseNumber, '暂无案号')}</div><div class="case-sub">${shown(c.cause, '未填写案由')}</div></td><td>${shown(c.client)}</td><td>${shown(c.opponent)}</td><td>${shown(c.letterNumber)}</td><td>${schedule}</td><td><span class="badge ${badgeClass(c.status)}">${esc(c.status)}</span></td><td><div class="actions"><button class="icon-btn" aria-label="查看办案进度" title="查看办案进度" data-action="progress" data-id="${esc(c.id)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5v14M8 7h9M8 12h12M8 17h7"/><path d="M17 5v4m3 1v4m-5 1v4"/></svg></button><button class="icon-btn" aria-label="查看案件" title="查看" data-action="view" data-id="${esc(c.id)}">${icons.eye}</button><button class="icon-btn" aria-label="编辑案件" title="编辑" data-action="edit" data-id="${esc(c.id)}">${icons.edit}</button><button class="icon-btn danger" aria-label="删除案件" title="删除" data-action="delete" data-id="${esc(c.id)}">${icons.trash}</button></div></td></tr>`;
         }).join('');
       }
 
       function renderCaseSelect() {
         const select = $('#ganttCaseSelect');
+        const query = $('#ganttCaseSearch').value.trim().toLowerCase();
+        const matches = cases.filter(c => [c.client,c.opponent,c.cause,c.caseNumber].some(v => String(v || '').toLowerCase().includes(query)));
+        $('#ganttSearchHint').textContent = query ? `找到 ${matches.length} 宗案件，请在下方选择` : '可先输入关键词缩小范围，再选择案件';
         if (!cases.length) {
           selectedGanttCaseId = null;
           select.innerHTML = '<option value="">暂无案件</option>';
@@ -675,10 +786,10 @@
           $('#addStageBtn').disabled = true;
           return;
         }
-        select.disabled = false;
-        $('#addStageBtn').disabled = false;
-        if (!findCase(selectedGanttCaseId)) selectedGanttCaseId = cases[0].id;
-        select.innerHTML = cases.map(c => `<option value="${esc(c.id)}" ${c.id === selectedGanttCaseId ? 'selected' : ''}>${esc(caseOptionLabel(c))}</option>`).join('');
+        select.disabled = !matches.length;
+        $('#addStageBtn').disabled = !matches.length;
+        if (!matches.some(c => c.id === selectedGanttCaseId)) selectedGanttCaseId = matches[0]?.id || null;
+        select.innerHTML = matches.length ? matches.map(c => `<option value="${esc(c.id)}" ${c.id === selectedGanttCaseId ? 'selected' : ''}>${esc(caseOptionLabel(c))}</option>`).join('') : '<option value="">没有匹配的案件</option>';
       }
 
       function monthSegments(start, end, totalDays) {
@@ -700,10 +811,17 @@
       function renderGantt() {
         const shell = $('#ganttShell');
         const c = findCase(selectedGanttCaseId);
-        if (!c) { $('#ganttSummary').innerHTML = ''; shell.innerHTML = '<div class="gantt-empty">请先新增案件，再为案件添加办案阶段。</div>'; return; }
+        if (!c) { $('#progressCards').innerHTML=''; $('#ganttSummary').innerHTML = ''; shell.innerHTML = cases.length ? '<div class="gantt-empty">没有匹配的案件，请修改搜索条件。</div>' : '<div class="gantt-empty">请先新增案件，再为案件添加办案阶段。</div>'; return; }
         const overdue = c.stages.filter(isOverdue).length;
-        $('#ganttSummary').innerHTML = `<strong>${averageProgress(c)}%</strong> 平均完成度<br>${c.stages.length} 个阶段 · ${overdue} 个逾期`;
+        $('#ganttSummary').innerHTML = `${c.stages.length} 个事项 · ${overdue} 个逾期`;
+        const next=nextSchedule(c), active=c.stages.filter(s=>s.status==='进行中'), deadlines=c.stages.filter(s=>s.type==='range'&&s.status!=='已完成'&&s.start<=todayISO()).sort((a,b)=>a.end.localeCompare(b.end));
+        const deadline=deadlines[0];
+        $('#progressCards').innerHTML = `<div class="progress-card"><span class="muted">当前进行</span><strong>${active.length ? active.map(s=>esc(s.name)).join('、') : '暂无进行中的事项'}</strong></div><div class="progress-card"><span class="muted">下一事项</span><strong>${next ? esc(next.text) : '暂无临近日程'}</strong>${next ? formatDate(next.date) : ''}</div><div class="progress-card"><span class="muted">期限关注</span><strong>${deadline ? esc(deadline.name) : '暂无进行中的期限'}</strong>${deadline ? `${formatDate(deadline.end)} ${isOverdue(deadline)?'已逾期':'到期'}` : ''}</div>`;
         if (!c.stages.length) { shell.innerHTML = '<div class="gantt-empty">该案件还没有办案阶段，点击“新增阶段”开始规划。</div>'; return; }
+        if (progressView==='timeline') {
+          shell.innerHTML = c.stages.slice().sort((a,b)=>a.start.localeCompare(b.start)).map(s=>`<div class="history-row"><div class="history-date">${formatDate(s.start)}${s.type==='range'?' — '+formatDate(s.end):''}</div><div><strong>${esc(s.name)}</strong><div class="task-meta">${s.type==='point'?'时间点':'时间段'} · ${esc(s.status)}${isOverdue(s)?' · 已逾期':''}</div></div><div class="task-actions"><button class="icon-btn" title="编辑阶段" data-stage-action="edit" data-stage-id="${esc(s.id)}">${icons.edit}</button><button class="icon-btn danger" title="删除阶段" data-stage-action="delete" data-stage-id="${esc(s.id)}">${icons.trash}</button></div></div>`).join('');
+          return;
+        }
         const dates = c.stages.flatMap(s => [parseDate(s.start), parseDate(s.end)]);
         const today = parseDate(todayISO());
         let start = new Date(Math.min(...dates.map(d=>d.getTime()), today.getTime()) - 3*DAY);
@@ -732,6 +850,8 @@
       function renderBankAll() {
         const allCases=bankBatches.flatMap(b=>b.defendants||[]),recovered=allCases.reduce((s,d)=>s+caseRecovered(d),0),feeOutstanding=allCases.reduce((s,d)=>s+caseLawyerFeeOutstanding(d),0);
         $('#bankStatBatches').textContent=bankBatches.length;$('#bankStatDefendants').textContent=allCases.length;$('#bankStatRecovered').textContent=currency(recovered);$('#bankStatOutstanding').textContent=currency(feeOutstanding);
+        const totals=bankBatches.map(batchTotals).reduce((a,t)=>({amount:money(a.amount+t.amount),recovered:money(a.recovered+t.recovered),fees:money(a.fees+t.fees),feeRecovered:money(a.feeRecovered+t.feeRecovered)}),{amount:0,recovered:0,fees:0,feeRecovered:0});
+        $('#recoveryOverview').innerHTML=recoverySummary('标的回款',totals.amount,totals.recovered)+recoverySummary('律师费回款',totals.fees,totals.feeRecovered);
         renderBankList();renderBankSelect();renderBankGantt();
       }
 
@@ -743,18 +863,21 @@
       }
 
       function renderBankSelect() {
-        const select=$('#bankGanttSelect'),all=bankBatches.flatMap(b=>b.defendants.map(d=>({batch:b,item:d})));
+        const select=$('#bankGanttSelect'),query=$('#bankGanttSearch').value.trim().toLowerCase(),all=bankBatches.flatMap(b=>b.defendants.map(d=>({batch:b,item:d}))).filter(({batch,item})=>[batch.branch,batch.loanType,item.name,item.caseNo,item.handlerName].join(' ').toLowerCase().includes(query));
         if(!all.length){selectedBankCaseId=null;select.innerHTML='<option>暂无被告案件</option>';select.disabled=true;$('#addBankEventBtn').disabled=true;return;}
-        if(!findBankCase(selectedBankCaseId))selectedBankCaseId=all[0].item.id;select.disabled=false;$('#addBankEventBtn').disabled=false;
+        if(!all.some(({item})=>item.id===selectedBankCaseId))selectedBankCaseId=all[0].item.id;select.disabled=false;$('#addBankEventBtn').disabled=false;
         select.innerHTML=all.map(({batch,item})=>`<option value="${esc(item.id)}" ${item.id===selectedBankCaseId?'selected':''}>${esc(batch.branch)} · ${esc(batch.loanType)} · ${shown(item.name,'未填写被告')}</option>`).join('');
       }
 
       function renderBankGantt() {
         const shell=$('#bankGanttShell'),found=findBankCase(selectedBankCaseId);
-        if(!found){$('#bankGanttSummary').innerHTML='';shell.innerHTML='<div class="gantt-empty">请先在业务分组中新增被告案件。</div>';return;}
+        if(!found){$('#bankProgressCards').innerHTML='';$('#bankGanttSummary').innerHTML='';shell.innerHTML='<div class="gantt-empty">没有匹配的被告案件，请调整搜索条件或新增案件。</div>';return;}
         const events=found.item.events||[],overdue=events.filter(isOverdue).length,progress=events.length?Math.round(events.reduce((s,e)=>s+bankEventProgress(e),0)/events.length):0,recovered=caseRecovered(found.item);
         $('#bankGanttSummary').innerHTML=`<strong>${progress}%</strong> 事件完成度<br>标的回款 ${currency(recovered)} · 待收律师费 ${currency(caseLawyerFeeOutstanding(found.item))}`;
+        const next=nextSchedule({events}),active=events.filter(e=>e.type==='range'&&e.status==='进行中'),deadline=events.filter(e=>e.type==='range'&&e.status!=='已完成'&&e.start<=todayISO()).sort((a,b)=>a.end.localeCompare(b.end))[0];
+        $('#bankProgressCards').innerHTML=`<div class="progress-card"><span class="muted">当前进行</span><strong>${active.length?active.map(e=>esc(e.name)).join('、'):'暂无进行中的事项'}</strong></div><div class="progress-card"><span class="muted">下一事项</span><strong>${next?esc(next.text):'暂无临近日程'}</strong>${next?formatDate(next.date):''}</div><div class="progress-card"><span class="muted">期限关注</span><strong>${deadline?esc(deadline.name):'暂无进行中的期限'}</strong>${deadline?`${formatDate(deadline.end)} ${isBankEventOverdue(deadline)?'已逾期':'到期'}`:''}</div>`;
         if(!events.length){shell.innerHTML='<div class="gantt-empty">该被告案件还没有进度事件，可添加时间点或时间段开始跟踪。</div>';return;}
+        if(bankProgressView==='timeline'){shell.innerHTML=events.slice().sort((a,b)=>a.start.localeCompare(b.start)).map(e=>`<div class="history-row"><div class="history-date">${formatDate(e.start)}${e.type==='range'?' — '+formatDate(e.end):''}</div><div><strong>${esc(e.name)}</strong><div class="task-meta">${e.type==='point'?'时间点':'时间段'} · ${esc(bankEventStatus(e))}${isBankEventOverdue(e)?' · 已逾期':''}</div>${e.notes?`<div class="task-meta">${esc(e.notes)}</div>`:''}</div><div class="task-actions"><button class="icon-btn" title="编辑事件" data-bank-event-action="edit" data-id="${esc(e.id)}">${icons.edit}</button><button class="icon-btn danger" title="删除事件" data-bank-event-action="delete" data-id="${esc(e.id)}">${icons.trash}</button></div></div>`).join('');return;}
         const dates=events.flatMap(e=>[parseDate(e.start),parseDate(e.end)]),today=parseDate(todayISO());
         let start=new Date(Math.min(...dates.map(d=>d.getTime()),today.getTime())-3*DAY),end=new Date(Math.max(...dates.map(d=>d.getTime()),today.getTime())+4*DAY);
         const rawSpan=Math.round((end-start)/DAY)+1;if(rawSpan<21){const extra=Math.ceil((21-rawSpan)/2);start=new Date(start.getTime()-extra*DAY);end=new Date(end.getTime()+extra*DAY);}
@@ -778,7 +901,7 @@
         $('#bankDrawerTitle').textContent=`${b.branch} · ${b.loanType}`;
         $('#bankDrawerBody').innerHTML=`<div class="bank-info-strip"><div class="bank-info-item"><span>标的总额</span><strong>${currency(totals.amount)}</strong></div><div class="bank-info-item"><span>标的累计回款</span><strong style="color:var(--green)">${currency(totals.recovered)}</strong></div><div class="bank-info-item"><span>律师费 / 已收</span><strong>${currency(totals.fees)} / ${currency(totals.feeRecovered)}</strong></div><div class="bank-info-item"><span>待收律师费</span><strong style="color:${totals.feeOutstanding>0?'var(--red)':'var(--green)'}">${currency(totals.feeOutstanding)}</strong></div></div>${b.notes?`<div class="inline-note">${esc(b.notes)}</div>`:''}
         <div class="section-title"><h3>被告案件（${b.defendants.length}）</h3><button class="btn btn-sm btn-primary" data-add-defendant="${esc(b.id)}">＋ 新增被告案件</button></div>
-        ${b.defendants.length?`<div class="defendant-wrap"><table><thead><tr><th>被告 / 案号</th><th>银行经办人</th><th>标的 / 回款</th><th>标的未回</th><th>律师费 / 已收</th><th>待收律师费</th><th>临近日程</th><th>操作</th></tr></thead><tbody>${b.defendants.map(d=>{const upcoming=nextSchedule({events:d.events||[]});const schedule=upcoming?`<div class="schedule-mini"><span class="schedule-date">${formatDate(upcoming.date)}</span><span class="schedule-text" title="${esc(upcoming.text)}">${esc(upcoming.text)}</span></div>`:'<span class="schedule-empty">暂无临近日程</span>';return `<tr><td><div class="case-main">${shown(d.name,'未填写被告')}</div><div class="case-sub">${shown(d.caseNo,'暂无案号')} · ${esc(d.status)}</div></td><td>${shown(d.handlerName)}</td><td><div class="money">${currency(d.amount)}</div><div class="case-sub" style="color:var(--green)">已收 ${currency(caseRecovered(d))}</div></td><td class="money" style="color:${caseOutstanding(d)>0?'var(--red)':'var(--green)'}">${currency(caseOutstanding(d))}</td><td><div class="money">${currency(d.lawyerFee)}</div><div class="case-sub" style="color:var(--green)">已收 ${currency(caseLawyerFeeRecovered(d))}</div></td><td class="money" style="color:${caseLawyerFeeOutstanding(d)>0?'var(--red)':'var(--green)'}">${currency(caseLawyerFeeOutstanding(d))}</td><td>${schedule}</td><td><button class="btn btn-sm" data-recovery-action="open" data-id="${esc(d.id)}">回款</button><button class="icon-btn" data-bank-case-progress="${esc(d.id)}" title="查看进度">${icons.eye}</button><button class="icon-btn" data-defendant-action="edit" data-id="${esc(d.id)}">${icons.edit}</button><button class="icon-btn danger" data-defendant-action="delete" data-id="${esc(d.id)}">${icons.trash}</button></td></tr>`;}).join('')}</tbody></table></div>`:'<div class="empty" style="padding:28px 10px">该分组尚未录入被告案件</div>'}`;
+        ${b.defendants.length?`<div class="defendant-wrap"><table><thead><tr><th>被告 / 案号</th><th>银行经办人</th><th>标的 / 回款</th><th>标的未回</th><th>律师费 / 已收</th><th>待收律师费</th><th>临近日程</th><th>操作</th></tr></thead><tbody>${b.defendants.map(d=>{const upcoming=nextSchedule({events:d.events||[]});const schedule=upcoming?`<div class="schedule-mini"><span class="schedule-date">${formatDate(upcoming.date)}</span><span class="schedule-text" title="${esc(upcoming.text)}">${esc(upcoming.text)}</span></div>`:'<span class="schedule-empty">暂无临近日程</span>';return `<tr><td><div class="case-main">${shown(d.name,'未填写被告')}</div><div class="case-sub">${shown(d.caseNo,'暂无案号')} · ${esc(d.status)}</div></td><td>${shown(d.handlerName)}</td><td><div class="money">${currency(d.amount)}</div><div class="case-sub" style="color:var(--green)">已收 ${currency(caseRecovered(d))}</div></td><td class="money" style="color:${caseOutstanding(d)>0?'var(--red)':'var(--green)'}">${currency(caseOutstanding(d))}</td><td><div class="money">${currency(d.lawyerFee)}</div><div class="case-sub" style="color:var(--green)">已收 ${currency(caseLawyerFeeRecovered(d))}</div></td><td class="money" style="color:${caseLawyerFeeOutstanding(d)>0?'var(--red)':'var(--green)'}">${currency(caseLawyerFeeOutstanding(d))}</td><td>${schedule}</td><td><button class="btn btn-sm" data-recovery-action="open" data-id="${esc(d.id)}">回款</button><button class="icon-btn" data-bank-case-progress="${esc(d.id)}" title="查看进度">${icons.eye}</button><button class="icon-btn" aria-label="编辑被告案件" data-defendant-action="edit" data-id="${esc(d.id)}">${icons.edit}</button><button class="icon-btn danger" aria-label="删除被告案件" data-defendant-action="delete" data-id="${esc(d.id)}">${icons.trash}</button></td></tr>`;}).join('')}</tbody></table></div>`:'<div class="empty" style="padding:28px 10px">该分组尚未录入被告案件</div>'}`;
       }
 
       function renderDrawer(id) {
@@ -788,21 +911,22 @@
         $('#drawerBody').innerHTML = `<div class="detail-grid">
           <div class="detail-item"><span>案号</span><strong>${shown(c.caseNumber)}</strong></div><div class="detail-item"><span>状态</span><strong><span class="badge ${badgeClass(c.status)}">${esc(c.status)}</span></strong></div>
           <div class="detail-item"><span>委托人</span><strong>${shown(c.client)}</strong></div><div class="detail-item"><span>对方当事人</span><strong>${shown(c.opponent)}</strong></div>
-          <div class="detail-item"><span>所函号</span><strong>${shown(c.letterNumber)}</strong></div><div class="detail-item"><span>代理人</span><strong>${shown(c.agent)}</strong></div>
+          <div class="detail-item"><span>所函号</span><strong>${shown(c.letterNumber)}</strong></div>
           <div class="detail-item"><span>创建时间</span><strong>${formatDateTime(c.createdAt)}</strong></div><div class="detail-item"><span>最后更新</span><strong>${formatDateTime(c.updatedAt)}</strong></div>
         </div><div class="section-title"><h3>办案阶段（${c.stages.length}）</h3><button class="btn btn-sm btn-primary" data-drawer-add-stage="${esc(c.id)}">＋ 新增阶段</button></div>
         <div class="stage-list">${c.stages.length ? c.stages.slice().sort((a,b)=>a.start.localeCompare(b.start)).map(s=>{const progress=stageProgress(s);return `<div class="stage-item"><div class="stage-row"><div><strong>${esc(s.name)}</strong><small>${s.type==='point'?'时间点 · '+formatDate(s.start):'时间段 · '+formatDate(s.start)+' — '+formatDate(s.end)} · ${esc(s.status)}</small></div>${s.type==='range'?`<span class="badge ${s.status==='已完成'?'badge-done':s.status==='已暂停'?'badge-paused':'badge-active'}">${progress}%</span>`:'<span class="type-tag">时间点</span>'}</div>${s.type==='range'?`<div class="stage-progress"><span style="width:${progress}%"></span></div>`:''}</div>`;}).join('') : '<div class="empty" style="padding:28px 10px">尚未添加办案阶段</div>'}</div>`;
       }
 
-      function openModal(id) { const el = $('#'+id); el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>$('.field, .select',el)?.focus(),50); }
-      function closeModal(id) { const el = $('#'+id); el.classList.remove('open'); el.setAttribute('aria-hidden','true'); document.body.style.overflow=''; if(id==='caseDrawer') currentDrawerId=null; if(id==='bankDrawer') currentBankDrawerId=null; }
+      const modalOrigins = new Map();
+      function openModal(id) { const el = $('#'+id); modalOrigins.set(id, document.activeElement); el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; (el.querySelector('.field, .select') || el.querySelector('button')).focus(); }
+      function closeModal(id) { const el = $('#'+id); el.classList.remove('open'); el.setAttribute('aria-hidden','true'); document.body.style.overflow=''; if(id==='caseDrawer') currentDrawerId=null; if(id==='bankDrawer') currentBankDrawerId=null; const origin=modalOrigins.get(id); modalOrigins.delete(id); if(origin?.isConnected) origin.focus(); }
       function clearValidation(form) { $$('.form-group',form).forEach(g=>g.classList.remove('invalid')); }
       function toast(message,type='ok') { const el=document.createElement('div'); el.className='toast '+(type==='error'?'error':''); el.textContent=message; $('#toastStack').appendChild(el); setTimeout(()=>el.remove(),3200); }
 
       function openCaseForm(id=null) {
         editingCaseId=id; const form=$('#caseForm'); form.reset(); clearValidation(form);
         $('#caseModalTitle').textContent=id?'编辑案件':'新增案件';
-        if(id){const c=findCase(id); $('#caseCause').value=c.cause;$('#caseNumber').value=c.caseNumber;$('#caseClient').value=c.client;$('#caseOpponent').value=c.opponent;$('#caseLetter').value=c.letterNumber;$('#caseAgent').value=c.agent;$('#caseStatus').value=c.status;}
+        if(id){const c=findCase(id); $('#caseCause').value=c.cause;$('#caseNumber').value=c.caseNumber;$('#caseClient').value=c.client;$('#caseOpponent').value=c.opponent;$('#caseLetter').value=c.letterNumber;$('#caseStatus').value=c.status;}
         openModal('caseModal');
       }
 
@@ -846,12 +970,12 @@
       }
 
       function openRecoveryModal(caseId){recoveryCaseId=caseId;$('#recoveryForm').reset();$('#recoveryDate').value=todayISO();renderRecoveryModal();openModal('recoveryModal');}
-      function renderRecoveryModal(){const found=findBankCase(recoveryCaseId);if(!found)return;const d=found.item,paid=caseRecovered(d),feePaid=caseLawyerFeeRecovered(d),rate=num(d.amount)?Math.round(paid/num(d.amount)*100):0;$('#recoveryModalTitle').textContent=`回款管理 · ${d.name||'未填写被告'}`;$('#recoveryTarget').textContent=currency(d.amount);$('#recoveryPaid').textContent=currency(paid);$('#recoveryOutstanding').textContent=currency(caseOutstanding(d));$('#recoveryRate').textContent=`${rate}%`;$('#recoveryLawyerFee').textContent=`${currency(d.lawyerFee)} / ${currency(feePaid)}`;$('#recoveryLawyerOutstanding').textContent=currency(caseLawyerFeeOutstanding(d));$('#recoveryHistory').innerHTML=d.payments.length?`<div class="defendant-wrap"><table><thead><tr><th>日期</th><th>款项归属</th><th>金额</th><th>方式</th><th>备注</th><th>操作</th></tr></thead><tbody>${d.payments.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`<tr><td>${formatDate(p.date)}</td><td>${p.category==='lawyerFee'?'律师费回款':'标的回款'}</td><td class="money" style="color:var(--green)">${currency(p.amount)}</td><td>${esc(p.type)}</td><td>${shown(p.note)}</td><td><button class="icon-btn danger" data-payment-delete="${esc(p.id)}">${icons.trash}</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty" style="padding:24px">暂无回款记录</div>';}
+      function renderRecoveryModal(){const found=findBankCase(recoveryCaseId);if(!found)return;const d=found.item,paid=caseRecovered(d),feePaid=caseLawyerFeeRecovered(d),rate=num(d.amount)?Math.round(paid/num(d.amount)*100):0;$('#recoveryModalTitle').textContent=`回款管理 · ${d.name||'未填写被告'}`;$('#recoveryTarget').textContent=currency(d.amount);$('#recoveryPaid').textContent=currency(paid);$('#recoveryOutstanding').textContent=currency(caseOutstanding(d));$('#recoveryRate').textContent=`${rate}%`;$('#recoveryLawyerFee').textContent=`${currency(d.lawyerFee)} / ${currency(feePaid)}`;$('#recoveryLawyerOutstanding').textContent=currency(caseLawyerFeeOutstanding(d));$('#recoveryHistory').innerHTML=d.payments.length?`<div class="defendant-wrap"><table><thead><tr><th>日期</th><th>款项归属</th><th>金额</th><th>方式</th><th>备注</th><th>操作</th></tr></thead><tbody>${d.payments.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`<tr><td>${formatDate(p.date)}</td><td>${p.category==='lawyerFee'?'律师费回款':'标的回款'}</td><td class="money" style="color:var(--green)">${currency(p.amount)}</td><td>${esc(p.type)}</td><td>${shown(p.note)}</td><td><button class="icon-btn danger" aria-label="删除回款记录" data-payment-delete="${esc(p.id)}">${icons.trash}</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty" style="padding:24px">暂无回款记录</div>';}
 
       $('#caseForm').addEventListener('submit', e => {
         e.preventDefault(); const form=e.currentTarget; clearValidation(form);
         const now=new Date().toISOString(); const old=findCase(editingCaseId);
-        const data={id:old?.id||uid('case'),cause:$('#caseCause').value.trim(),caseNumber:$('#caseNumber').value.trim(),client:$('#caseClient').value.trim(),opponent:$('#caseOpponent').value.trim(),letterNumber:$('#caseLetter').value.trim(),agent:$('#caseAgent').value.trim(),status:$('#caseStatus').value,createdAt:old?.createdAt||now,updatedAt:now,stages:old?.stages||[]};
+        const data={id:old?.id||uid('case'),cause:$('#caseCause').value.trim(),caseNumber:$('#caseNumber').value.trim(),client:$('#caseClient').value.trim(),opponent:$('#caseOpponent').value.trim(),letterNumber:$('#caseLetter').value.trim(),status:$('#caseStatus').value,createdAt:old?.createdAt||now,updatedAt:now,stages:old?.stages||[]};
         if(old) cases[cases.indexOf(old)]=data; else {cases.unshift(data);selectedGanttCaseId=data.id;}
         if(!saveCases()){renderAll();return;}closeModal('caseModal');renderAll();toast(old?'案件已更新':'案件已新增');
       });
@@ -889,23 +1013,35 @@
 
       $('#recoveryForm').addEventListener('submit',e=>{e.preventDefault();const found=findBankCase(recoveryCaseId),amount=money($('#recoveryAmount').value);if(amount<=0){toast('请输入大于 0 的回款金额','error');return;}found.item.payments.push({id:uid('pay'),date:$('#recoveryDate').value||todayISO(),amount,category:$('#recoveryCategory').value,type:$('#recoveryType').value,note:$('#recoveryNote').value.trim()});found.batch.updatedAt=new Date().toISOString();if(!saveBankBatches()){renderAll();return;}$('#recoveryAmount').value='';$('#recoveryNote').value='';renderAll();renderRecoveryModal();toast('回款记录已添加');});
 
-      $('#caseTableBody').addEventListener('click',e=>{const btn=e.target.closest('[data-action]');if(!btn)return;const{id,action}=btn.dataset;if(action==='view'){renderDrawer(id);openModal('caseDrawer');}if(action==='edit')openCaseForm(id);if(action==='delete'){const c=findCase(id);if(confirm(`确定删除案件“${c.cause || c.caseNumber || '未命名案件'}”吗？该案件的全部阶段也会一并删除。`)){cases=cases.filter(x=>x.id!==id);if(!saveCases()){renderAll();return;}renderAll();toast('案件已删除');}}});
+      function openCaseProgress(id){if(!findCase(id))return;selectedGanttCaseId=id;$('#ganttCaseSearch').value='';renderCaseSelect();$$('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});$$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-progress'));renderGantt();window.scrollTo({top:0});}
+      function openBankCaseProgress(id){if(!findBankCase(id))return;selectedBankCaseId=id;$('#bankGanttSearch').value='';closeModal('bankDrawer');renderBankSelect();$$('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});$$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-bank-progress'));renderBankGantt();window.scrollTo({top:0});}
+      $('#backToBank').addEventListener('click',()=> $('[data-page="bank"]').click());
+      $('#bankDrawerBody').addEventListener('dblclick',e=>{if(e.target.closest('button'))return;const row=e.target.closest('tr'),btn=row?.querySelector('[data-bank-case-progress]');if(btn)openBankCaseProgress(btn.dataset.bankCaseProgress);});
+      $('#backToCases').addEventListener('click',()=> $('[data-page="cases"]').click());
+      $('#caseTableBody').addEventListener('dblclick',e=>{if(e.target.closest('button'))return;const row=e.target.closest('[data-case-id]');if(row)openCaseProgress(row.dataset.caseId);});
+      $('#caseTableBody').addEventListener('click',e=>{const btn=e.target.closest('[data-action]');if(!btn)return;const{id,action}=btn.dataset;if(action==='progress')openCaseProgress(id);if(action==='view'){renderDrawer(id);openModal('caseDrawer');}if(action==='edit')openCaseForm(id);if(action==='delete'){const c=findCase(id);if(confirm(`确定删除案件“${c.cause || c.caseNumber || '未命名案件'}”吗？该案件的全部阶段也会一并删除。`)){cases=cases.filter(x=>x.id!==id);if(!saveCases()){renderAll();return;}renderAll();toast('案件已删除');}}});
       $('#ganttShell').addEventListener('click',e=>{const el=e.target.closest('[data-stage-action]');if(!el)return;const id=el.dataset.stageId;if(el.dataset.stageAction==='edit')openStageForm(id);else if(confirm('确定删除这个办案阶段吗？')){const c=findCase(selectedGanttCaseId);c.stages=c.stages.filter(s=>s.id!==id);c.updatedAt=new Date().toISOString();if(!saveCases()){renderAll();return;}renderAll();toast('办案阶段已删除');}});
       $('#drawerBody').addEventListener('click',e=>{const btn=e.target.closest('[data-drawer-add-stage]');if(btn){closeModal('caseDrawer');selectedGanttCaseId=btn.dataset.drawerAddStage;openStageForm();}});
       $('#bankTableBody').addEventListener('click',e=>{const btn=e.target.closest('[data-bank-action]');if(!btn)return;const b=findBankBatch(btn.dataset.id),action=btn.dataset.bankAction;if(action==='view'){selectedBankBatchId=b.id;renderBankDrawer(b.id);openModal('bankDrawer');}if(action==='edit')openBankBatchForm(b.id);if(action==='delete'&&confirm(`确定删除“${b.branch} · ${b.loanType}”分组吗？组内被告案件、回款和进度将一并删除。`)){bankBatches=bankBatches.filter(x=>x.id!==b.id);if(!saveBankBatches()){renderAll();return;}renderAll();toast('银行案件分组已删除');}});
-      $('#bankDrawerBody').addEventListener('click',e=>{const add=e.target.closest('[data-add-defendant]'),progress=e.target.closest('[data-bank-case-progress]'),recovery=e.target.closest('[data-recovery-action]'),action=e.target.closest('[data-defendant-action]');if(add){const id=add.dataset.addDefendant;closeModal('bankDrawer');openDefendantForm(null,id);}if(progress){selectedBankCaseId=progress.dataset.bankCaseProgress;closeModal('bankDrawer');$$('.subtab').forEach(x=>x.classList.toggle('active',x.dataset.bankView==='timeline'));$$('.bank-view').forEach(x=>x.classList.toggle('active',x.id==='bank-view-timeline'));renderBankSelect();renderBankGantt();}if(recovery){closeModal('bankDrawer');openRecoveryModal(recovery.dataset.id);}if(action){const b=findBankBatch(selectedBankBatchId),d=b.defendants.find(x=>x.id===action.dataset.id);if(action.dataset.defendantAction==='edit'){closeModal('bankDrawer');openDefendantForm(d.id);}else if(confirm(`确定删除被告案件“${d.name||d.caseNo||'未命名案件'}”吗？其回款与进度记录也会删除。`)){b.defendants=b.defendants.filter(x=>x.id!==d.id);b.updatedAt=new Date().toISOString();if(!saveBankBatches()){renderAll();return;}renderAll();renderBankDrawer(b.id);toast('被告案件已删除');}}});
+      $('#bankDrawerBody').addEventListener('click',e=>{const add=e.target.closest('[data-add-defendant]'),progress=e.target.closest('[data-bank-case-progress]'),recovery=e.target.closest('[data-recovery-action]'),action=e.target.closest('[data-defendant-action]');if(add){const id=add.dataset.addDefendant;closeModal('bankDrawer');openDefendantForm(null,id);}if(progress)openBankCaseProgress(progress.dataset.bankCaseProgress);if(recovery){closeModal('bankDrawer');openRecoveryModal(recovery.dataset.id);}if(action){const b=findBankBatch(selectedBankBatchId),d=b.defendants.find(x=>x.id===action.dataset.id);if(action.dataset.defendantAction==='edit'){closeModal('bankDrawer');openDefendantForm(d.id);}else if(confirm(`确定删除被告案件“${d.name||d.caseNo||'未命名案件'}”吗？其回款与进度记录也会删除。`)){b.defendants=b.defendants.filter(x=>x.id!==d.id);b.updatedAt=new Date().toISOString();if(!saveBankBatches()){renderAll();return;}renderAll();renderBankDrawer(b.id);toast('被告案件已删除');}}});
       $('#bankGanttShell').addEventListener('click',e=>{const el=e.target.closest('[data-bank-event-action]');if(!el)return;const found=findBankCase(selectedBankCaseId),event=found.item.events.find(x=>x.id===el.dataset.id);if(el.dataset.bankEventAction==='edit')openBankEventForm(event.id);else if(confirm(`确定删除进度事件“${event.name}”吗？`)){found.item.events=found.item.events.filter(x=>x.id!==event.id);found.batch.updatedAt=new Date().toISOString();if(!saveBankBatches()){renderAll();return;}renderAll();toast('进度事件已删除');}});
       $('#recoveryHistory').addEventListener('click',e=>{const btn=e.target.closest('[data-payment-delete]');if(!btn)return;const found=findBankCase(recoveryCaseId),payment=found.item.payments.find(p=>p.id===btn.dataset.paymentDelete);if(confirm(`确定删除 ${formatDate(payment.date)} 的回款记录 ${currency(payment.amount)} 吗？`)){found.item.payments=found.item.payments.filter(p=>p.id!==payment.id);found.batch.updatedAt=new Date().toISOString();if(!saveBankBatches()){renderAll();return;}renderAll();renderRecoveryModal();toast('回款记录已删除');}});
       $('#addCaseBtn').addEventListener('click',()=>openCaseForm());
       $('#addStageBtn').addEventListener('click',()=>openStageForm());
       $('#addBankBatchBtn').addEventListener('click',()=>openBankBatchForm());
       $('#addBankEventBtn').addEventListener('click',()=>openBankEventForm());
-      $('#searchInput').addEventListener('input',renderCases);
-      $('#statusFilter').addEventListener('change',renderCases);
+      $('#searchInput').addEventListener('input',()=>{casePage=1;renderCases();});
+      $('#statusFilter').addEventListener('change',()=>{casePage=1;renderCases();});
+      $('#casePrev').addEventListener('click',()=>{casePage--;renderCases();});
+      $('#caseNext').addEventListener('click',()=>{casePage++;renderCases();});
       $('#bankSearchInput').addEventListener('input',renderBankList);
       $('#bankBranchFilter').addEventListener('change',renderBankList);
       $('#ganttCaseSelect').addEventListener('change',e=>{selectedGanttCaseId=e.target.value;renderGantt();});
+      for(const [id,view] of [['timelineView','timeline'],['ganttView','gantt']]) $('#'+id).addEventListener('click',()=>{progressView=view;$('#timelineView').setAttribute('aria-pressed',view==='timeline');$('#ganttView').setAttribute('aria-pressed',view==='gantt');renderGantt();});
+      $('#ganttCaseSearch').addEventListener('input',()=>{renderCaseSelect();renderGantt();});
       $('#bankGanttSelect').addEventListener('change',e=>{selectedBankCaseId=e.target.value;renderBankGantt();});
+      $('#bankGanttSearch').addEventListener('input',()=>{renderBankSelect();renderBankGantt();});
+      for(const [id,view] of [['bankTimelineView','timeline'],['bankGanttView','gantt']]) $('#'+id).addEventListener('click',()=>{bankProgressView=view;$('#bankTimelineView').setAttribute('aria-pressed',view==='timeline');$('#bankGanttView').setAttribute('aria-pressed',view==='gantt');renderBankGantt();});
       $('#stageType').addEventListener('change',syncStageType);
       $('#stagePreset').addEventListener('change',e=>{if(!e.target.value)return;const option=e.target.selectedOptions[0];$('#stageName').value=e.target.value;$('#stageType').value=option.dataset.type;syncStageType();});
       $('#bankEventType').addEventListener('change',syncBankEventType);
@@ -914,13 +1050,13 @@
       $$('.subtab').forEach(btn=>btn.addEventListener('click',()=>{$$('.subtab').forEach(x=>x.classList.toggle('active',x===btn));$$('.bank-view').forEach(x=>x.classList.toggle('active',x.id===`bank-view-${btn.dataset.bankView}`));if(btn.dataset.bankView==='timeline')renderBankGantt();}));
       $$('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
       $$('.modal-backdrop, .drawer-backdrop').forEach(el=>el.addEventListener('mousedown',e=>{if(e.target===el)closeModal(el.id);}));
-      document.addEventListener('keydown',e=>{if(e.key==='Escape'){const open=$$('.modal-backdrop.open, .drawer-backdrop.open').pop();if(open)closeModal(open.id);}});
+      document.addEventListener('keydown',e=>{const open=$$('.modal-backdrop.open, .drawer-backdrop.open').pop();if(!open)return;if(e.key==='Escape'){closeModal(open.id);return;}if(e.key==='Tab'){const items=$$('button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',open).filter(el=>el.getClientRects().length);if(!items.length)return;const first=items[0],last=items[items.length-1];if(e.shiftKey&&(document.activeElement===first||!open.contains(document.activeElement))){e.preventDefault();last.focus();}else if(!e.shiftKey&&(document.activeElement===last||!open.contains(document.activeElement))){e.preventDefault();first.focus();}}});
 
-      $$('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{$$('.nav-btn').forEach(b=>b.classList.toggle('active',b===btn));$$('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${btn.dataset.page}`));if(btn.dataset.page==='progress')renderGantt();window.scrollTo({top:0});}));
+      $$('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{$$('.nav-btn').forEach(b=>{b.classList.toggle('active',b===btn);if(b===btn)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$$('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${btn.dataset.page}`));if(btn.dataset.page==='progress')renderGantt();window.scrollTo({top:0});}));
 
       $('#exportBtn').addEventListener('click',()=>{
-        const payload={app:'君轩个人案件管理平台',version:3,exportedAt:new Date().toISOString(),cases,bankBatches};
-        const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`君轩案件备份_${todayISO()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('备份文件已导出');
+        const payload={app:'Ordinarium',version:3,exportedAt:new Date().toISOString(),cases,bankBatches};
+        const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Ordinarium案件备份_${todayISO()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('备份文件已导出');
       });
       $('#importBtn').addEventListener('click',()=>$('#importFile').click());
       $('#importFile').addEventListener('change',async e=>{
@@ -931,22 +1067,25 @@
       });
       $('#clearBtn').addEventListener('click',()=>{if(!confirm('第一次确认：是否清空普通案件与银行案件的全部数据？'))return;if(!confirm('第二次确认：此操作无法撤销。请确认已完成备份，并继续清空。'))return;if(!replaceAllData([],[]))return;cases=[];bankBatches=[];selectedGanttCaseId=null;selectedBankBatchId=null;selectedBankCaseId=null;renderAll();toast('全部案件数据已清空');});
 
+      function uniqueIds(items) { return Array.isArray(items)&&items.every(item=>item&&safeId(item.id))&&new Set(items.map(item=>item.id)).size===items.length; }
       function validateCases(value){
-        if(!Array.isArray(value))return false;
-        const caseStatus=['办理中','已完成','已暂停'],stageStatus=['未开始','进行中','已完成','已暂停'];
+        if(!uniqueIds(value))return false;
+        const caseStatus=['办理中','已结案','已完成','已暂停'],stageStatus=['未开始','进行中','已完成','已暂停'];
         const str=v=>typeof v==='string'&&v.trim().length>0, text=v=>typeof v==='string';
-        return value.every(c=>c&&safeId(c.id)&&['cause','caseNumber','client','opponent','letterNumber','agent'].every(k=>text(c[k]))&&caseStatus.includes(c.status)&&str(c.createdAt)&&str(c.updatedAt)&&Array.isArray(c.stages)&&c.stages.every(s=>s&&safeId(s.id)&&str(s.name)&&(!s.type||['point','range'].includes(s.type))&&isISODate(s.start)&&isISODate(s.end||s.start)&&(s.end||s.start)>=s.start&&Number.isFinite(Number(s.progress))&&Number(s.progress)>=0&&Number(s.progress)<=100&&stageStatus.includes(s.status)));
+        return value.every(c=>c&&safeId(c.id)&&['cause','caseNumber','client','opponent','letterNumber'].every(k=>text(c[k]))&&caseStatus.includes(c.status)&&str(c.createdAt)&&str(c.updatedAt)&&uniqueIds(c.stages)&&c.stages.every(s=>s&&safeId(s.id)&&str(s.name)&&(!s.type||['point','range'].includes(s.type))&&isISODate(s.start)&&isISODate(s.end||s.start)&&(s.end||s.start)>=s.start&&Number.isFinite(Number(s.progress))&&Number(s.progress)>=0&&Number(s.progress)<=100&&stageStatus.includes(s.status)));
       }
 
       function validateBankBatches(value){
-        if(!Array.isArray(value))return false;const str=v=>typeof v==='string'&&v.length>0,branches=['金坛农行','溧阳农行','经开农行'];
+        if(!uniqueIds(value))return false;const str=v=>typeof v==='string'&&v.length>0,branches=['金坛农行','溧阳农行','经开农行'];
+        if(!uniqueIds(value.flatMap(b=>Array.isArray(b.defendants)?b.defendants:[])))return false;
         const validEvent=e=>e&&safeId(e.id)&&str(e.name)&&['point','range'].includes(e.type)&&isISODate(e.start)&&isISODate(e.end||e.start)&&(e.end||e.start)>=e.start&&Number.isFinite(Number(e.progress));
-        return value.every(b=>b&&safeId(b.id)&&branches.includes(b.branch)&&Array.isArray(b.defendants)&&b.defendants.every(d=>d&&safeId(d.id)&&Number.isFinite(Number(d.amount))&&Number(d.amount)>=0&&Number.isFinite(Number(d.lawyerFee))&&Number(d.lawyerFee)>=0&&(!d.payments||Array.isArray(d.payments)&&d.payments.every(p=>p&&safeId(p.id)&&isISODate(p.date)&&Number.isFinite(Number(p.amount))&&Number(p.amount)>=0&&(!p.category||['principal','lawyerFee'].includes(p.category))))&&(!d.events||Array.isArray(d.events)&&d.events.every(validEvent)))&&(!b.events||Array.isArray(b.events)&&b.events.every(validEvent)));
+        return value.every(b=>b&&safeId(b.id)&&branches.includes(b.branch)&&Array.isArray(b.defendants)&&b.defendants.every(d=>d&&safeId(d.id)&&Number.isFinite(Number(d.amount))&&Number(d.amount)>=0&&Number.isFinite(Number(d.lawyerFee))&&Number(d.lawyerFee)>=0&&(!d.payments||uniqueIds(d.payments)&&d.payments.every(p=>p&&safeId(p.id)&&isISODate(p.date)&&Number.isFinite(Number(p.amount))&&Number(p.amount)>=0&&(!p.category||['principal','lawyerFee'].includes(p.category))))&&(!d.events||uniqueIds(d.events)&&d.events.every(validEvent)))&&(!b.events||uniqueIds(b.events)&&b.events.every(validEvent)));
       }
 
-      const now=new Date();
-      $('#todayText').textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 清晰掌握每一宗案件的关键节点`;
       renderAll();
+      setInterval(refreshDate,30000);
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshDate();});
+      window.addEventListener('focus',refreshDate);
     })();
   </script>
 </body>
