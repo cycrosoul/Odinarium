@@ -370,6 +370,14 @@
     .distribution-card .insight-legend .btn { border-color:transparent; background:transparent; box-shadow:none; padding:4px 6px; min-height:32px; font-size:11px; }
     .bank-chart-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:22px; }
     .bank-chart-grid .distribution-card { min-height:320px; }
+    /* Shared grid rows align headings, chart centers and legends across cards. */
+    .insight-grid > .insight, .bank-chart-grid > .distribution-card { grid-row:span 5; }
+    .distribution-card { display:grid; grid-template-rows:subgrid; row-gap:0; }
+    .distribution-card #caseDistribution, .distribution-card #executionDistribution, .distribution-card .bank-chart { display:contents; }
+    .distribution-card .distribution-ring { justify-self:center; align-self:start; width:min(100%, 160px); }
+    .distribution-card .insight-legend { align-self:start; }
+    .distribution-card > .insight-note { align-self:start; }
+
     @media(max-width:1100px) { .bank-chart-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media(max-width:600px) { .bank-chart-grid { grid-template-columns:1fr; } }
     .insight { padding:20px; }
